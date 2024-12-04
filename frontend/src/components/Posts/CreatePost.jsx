@@ -32,34 +32,60 @@ const CreatePost = () => {
     },
   });
 
-  //get loading state
-  const isLoading = postMutation.isPending;
-  //get error state
-  const isError = postMutation.isError;
-  //get success state
-  const isSuccess = postMutation.isSuccess;
-  //error
-  const errorMessage = postMutation?.error?.response?.data?.message;
+  // //get loading state
+  // const isLoading = postMutation.isPending;
+  // //get error state
+  // const isError = postMutation.isError;
+  // //get success state
+  // const isSuccess = postMutation.isSuccess;
+  // //error
+  // const errorMessage = postMutation?.error?.response?.data?.message;
 
   return (
-    <div>
-      {isLoading && <p>Loading...</p>}
-      {isSuccess && <p>Post Created Successfully</p>}
-      {isError && <p>{errorMessage}</p>}
-      <form onSubmit={formik.handleSubmit}>
-        <ReactQuill
-          value={formik.values.description}
-          onChange={(value) => {
-            setDescription(value);
-            formik.setFieldValue("description", value);
-          }}
-        />
-        {/* Display Error Messages */}
-        {formik.touched.description && formik.errors.description && (
-          <span>{formik.errors.description}</span>
-        )}
-        <button type="submit">Create</button>
-      </form>
+    <div className="flex items-center justify-center">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 m-4">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
+          Add New Post
+        </h2>
+        {/* show alert */}
+
+        <form onSubmit={formik.handleSubmit} className="space-y-6">
+          {/* Description Input - Using ReactQuill for rich text editing */}
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Description
+            </label>
+            <ReactQuill
+              value={formik.values.description}
+              onChange={(value) => {
+                setDescription(value);
+                formik.setFieldValue("description", value);
+              }}
+            />
+            {/* display err msg */}
+            {formik.touched.description && formik.errors.description && (
+              <span style={{ color: "red" }}>{formik.errors.description}</span>
+            )}
+          </div>
+
+          {/* Category Input - Dropdown for selecting post category */}
+          
+
+          {/* Image Upload Input - File input for uploading images */}
+         
+
+          {/* Submit Button - Button to submit the form */}
+          <button
+            type="submit"
+            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-500 hover:from-indigo-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Add Post
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
