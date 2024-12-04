@@ -34,8 +34,7 @@ const ListPosts = () => {
       {data?.posts.map((post) => {
         return (
           <div key={post?._id}>
-            <h2 className="font-extrabold">{post?.title}</h2>
-            <p>{post?.description}</p>
+            <div dangerouslySetInnerHTML={{__html: post?.description }} />
             <Link className="border-2" to={`/posts/${post?._id}`}>
               Edit
             </Link>

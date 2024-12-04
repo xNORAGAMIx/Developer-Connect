@@ -2,9 +2,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { createPostAPI } from "../../APIServices/posts/postsAPI";
+import { useState } from "react";
 
 const CreatePost = () => {
+  //state for wysiwyg
+  // eslint-disable-next-line no-unused-vars
+  const [description, setDescription] = useState("");
   //post mutation
   const postMutation = useMutation({
     mutationKey: ["create-post"],
@@ -13,17 +18,14 @@ const CreatePost = () => {
 
   const formik = useFormik({
     initialValues: {
-      title: "",
       description: "",
     },
     validationSchema: Yup.object({
-      title: Yup.string().required("Title is required"),
       description: Yup.string().required("Description is required"),
     }),
     onSubmit: (values) => {
       console.log(values);
       const postData = {
-        title: values.title,
         description: values.description,
       };
       postMutation.mutate(postData);
@@ -45,21 +47,12 @@ const CreatePost = () => {
       {isSuccess && <p>Post Created Successfully</p>}
       {isError && <p>{errorMessage}</p>}
       <form onSubmit={formik.handleSubmit}>
-        <input
-          type="text"
-          name="title"
-          placeholder="Enter Title"
-          {...formik.getFieldProps("title")}
-        />
-        {/* Display Error Messages */}
-        {formik.touched.title && formik.errors.title && (
-          <span>{formik.errors.title}</span>
-        )}
-        <input
-          type="text"
-          name="description"
-          placeholder="Enter Description"
-          {...formik.getFieldProps("description")}
+        <ReactQuill
+          value={formik.values.description}
+          onChange={(value) => {
+            setDescription(value);
+            formik.setFieldValue("description", value);
+          }}
         />
         {/* Display Error Messages */}
         {formik.touched.description && formik.errors.description && (
