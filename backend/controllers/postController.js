@@ -4,8 +4,8 @@ import asyncHandler from "express-async-handler";
 //Create posts
 export const createPosts = asyncHandler(async (req, res) => {
   //get the data from the request body
-  const postData = req.body;
-  const postCreated = await Post.create(postData);
+  const { description } = req.body;
+  const postCreated = await Post.create({ description, image: req.file });
   res.json({
     status: "success",
     message: "Post created successfully",
