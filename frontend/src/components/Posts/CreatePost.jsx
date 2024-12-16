@@ -15,6 +15,7 @@ const CreatePost = () => {
   // file upload state
   const [imageError, setImageError] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  
   //post mutation
   const postMutation = useMutation({
     mutationKey: ["create-post"],
