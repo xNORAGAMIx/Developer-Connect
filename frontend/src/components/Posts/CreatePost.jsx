@@ -49,8 +49,8 @@ const CreatePost = () => {
     //get the file selected
     const file = e.currentTarget.files[0];
     //limit file size
-    if (file.size > 1024 * 1024) {
-      setImageError("File size exceed 1MB");
+    if (file.size > 1024 * 1024 * 5) {
+      setImageError("File size exceed 5MB");
       return;
     }
     // limit the file types
@@ -72,12 +72,9 @@ const CreatePost = () => {
   //get error state
   const isError = postMutation.isError;
   //get success state
-  //const isSuccess = postMutation.isSuccess;
+  const isSuccess = postMutation.isSuccess;
   //error
   const errorMessage = postMutation?.error?.response?.data?.message;
-
-  // is Error
-  if (isError) return <AlertMessage type="error" message={errorMessage} />;
 
   return (
     <div className="flex items-center justify-center">
@@ -89,6 +86,13 @@ const CreatePost = () => {
         {isLoading && (
           <AlertMessage type="loading" message="Loading please wait" />
         )}
+        {isError && (
+          <AlertMessage type="error" message={errorMessage} />
+        )}
+        {isSuccess && (
+          <AlertMessage type="success" message="Post created successfully" />
+        )}
+        
         {/* show alert */}
 
         <form onSubmit={formik.handleSubmit} className="space-y-6">

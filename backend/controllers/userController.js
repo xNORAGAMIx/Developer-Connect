@@ -113,3 +113,8 @@ export const checkAuthenticated = asyncHandler(async (req, res) => {
     return res.status(401).json({ isAuthenticated: false, err });
   }
 });
+
+export const logoutUser = asyncHandler(async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out" });
+});

@@ -1,6 +1,8 @@
 //create that must return a promise
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
 const BASE_URL = "http://localhost:5000/api/v1/posts";
 
 //Create post api

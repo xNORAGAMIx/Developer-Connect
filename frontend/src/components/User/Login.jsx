@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
@@ -6,6 +6,8 @@ import { loginUser } from "../../APIServices/users/userAPI";
 import AlertMessage from "../Alert/AlertMessage";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const userMutation = useMutation({
     mutationKey: ["login-user"],
     mutationFn: loginUser,
@@ -23,9 +25,16 @@ const Login = () => {
       password: Yup.string().min(8, "Password must be at least 8 characters"),
     }),
     //onSubmit
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log(values);
-      userMutation.mutate(values);
+      userMutation
+        .mutateAsync(values)
+        .then(() => {
+          navigate("/profile");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   });
 

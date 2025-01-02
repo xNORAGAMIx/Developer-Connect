@@ -32,3 +32,23 @@ export const loginUser = async (userData) => {
   );
   return response.data;
 };
+
+// Authentication api
+export const checkAuthStatus = async () => {
+  const response = await axios.get(`${BASE_URL}/checkAuthenticated`, {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
+//Logout user api
+export const logoutUser = async () => {
+  const response = await axios.post(
+    `${BASE_URL}/logout`,
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+};
