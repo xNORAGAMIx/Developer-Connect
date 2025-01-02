@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { FaTimesCircle } from "react-icons/fa";
 import * as Yup from "yup";
@@ -7,6 +7,8 @@ import "react-quill/dist/quill.snow.css";
 import { createPostAPI } from "../../APIServices/posts/postsAPI";
 import AlertMessage from "../Alert/AlertMessage";
 import { useState } from "react";
+import Select from "react-select";
+import { fetchCategoriesAPI } from "../../APIServices/categories/categoryAPI";
 
 const CreatePost = () => {
   //state for wysiwyg
@@ -15,7 +17,7 @@ const CreatePost = () => {
   // file upload state
   const [imageError, setImageError] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-  
+
   //post mutation
   const postMutation = useMutation({
     mutationKey: ["create-post"],
@@ -27,17 +29,20 @@ const CreatePost = () => {
     initialValues: {
       description: "",
       image: "",
+      category: "",
     },
     //validation
     validationSchema: Yup.object({
       description: Yup.string().required("Description is required"),
       image: Yup.string().required("Image is required"),
+      category: Yup.string().required("Category is required"),
     }),
     //submit
     onSubmit: (values) => {
       const formData = new FormData();
-      formData.append('description', values.description);
-      formData.append('image', values.image);
+      formData.append("description", values.description);
+      formData.append("image", values.image);
+      formData.append("category", values.category);
       postMutation.mutate(formData);
     },
   });
@@ -64,9 +69,9 @@ const CreatePost = () => {
 
   // remove image
   const removeImage = () => {
-    formik.setFieldValue('image', null);
+    formik.setFieldValue("image", null);
     setImagePreview(null);
-  }
+  };
   //get loading state
   const isLoading = postMutation.isPending;
   //get error state
@@ -75,6 +80,12 @@ const CreatePost = () => {
   const isSuccess = postMutation.isSuccess;
   //error
   const errorMessage = postMutation?.error?.response?.data?.message;
+
+  //fetch Categories
+  const {data} = useQuery({
+    queryKey: ["category-list"],
+    queryFn: fetchCategoriesAPI,
+  })
 
   return (
     <div className="flex items-center justify-center">
@@ -86,13 +97,11 @@ const CreatePost = () => {
         {isLoading && (
           <AlertMessage type="loading" message="Loading please wait" />
         )}
-        {isError && (
-          <AlertMessage type="error" message={errorMessage} />
-        )}
+        {isError && <AlertMessage type="error" message={errorMessage} />}
         {isSuccess && (
           <AlertMessage type="success" message="Post created successfully" />
         )}
-        
+
         {/* show alert */}
 
         <form onSubmit={formik.handleSubmit} className="space-y-6">
@@ -118,6 +127,34 @@ const CreatePost = () => {
           </div>
 
           {/* Category Input - Dropdown for selecting post category */}
+          <div>
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Category
+            </label>
+            <Select
+              name="category"
+              options={data?.categories?.map((category) => {
+                return {
+                  value: category._id,
+                  label: category.categoryName,
+                };
+              })}
+              onChange={(option) => {
+                return formik.setFieldValue("category", option.value);
+              }}
+              value={data?.categories?.find(
+                (option) => option.value === formik.values.category
+              )}
+              className="mt-1 block w-full"
+            />
+            {/* display error */}
+            {formik.touched.category && formik.errors.category && (
+              <p className="text-sm text-red-600">{formik.errors.category}</p>
+            )}
+          </div>
 
           {/* Image Upload Input - File input for uploading images */}
           <div className="flex flex-col items-center justify-center bg-gray-50 p-4 shadow rounded-lg">

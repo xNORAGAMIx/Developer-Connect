@@ -6,6 +6,7 @@ import { connectDB } from "./utils/connectDB.js";
 import cookieParser from "cookie-parser";
 import postRoutes from "./routes/postRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -29,6 +30,9 @@ app.use("/api/v1/posts", postRoutes);
 
 //User routes
 app.use("/api/v1/users", userRoutes);
+
+//Category routes
+app.use("/api/v1/categories", categoryRoutes);
 
 //Not found route
 app.use((req, res) => {

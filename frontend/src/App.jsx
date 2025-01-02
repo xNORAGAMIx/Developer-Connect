@@ -18,6 +18,7 @@ import { isAuthenticated } from "./redux/slices/authSlice";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import UserDashbaord from "./components/User/UserDashboard";
 import AccountSummaryDashboard from "./components/User/AccountSummaryDashboard";
+import AddCategory from "./components/Category/AddCategory";
 
 const App = () => {
   const { userAuth } = useSelector((state) => state.auth);
@@ -60,6 +61,14 @@ const App = () => {
             element={
               <AuthRoute>
                 <CreatePost />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="add-category"
+            element={
+              <AuthRoute>
+                <AddCategory />
               </AuthRoute>
             }
           />

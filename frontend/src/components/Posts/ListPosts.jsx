@@ -4,8 +4,15 @@ import { deletePostAPI, listPostsAPI } from "../../APIServices/posts/postsAPI";
 import { Link } from "react-router-dom";
 import NoDataFound from "../Alert/NoDataFound";
 import AlertMessage from "../Alert/AlertMessage";
+import PostCategory from "../Category/PostCategory";
+import { fetchCategoriesAPI } from "../../APIServices/categories/categoryAPI";
 
 const ListPosts = () => {
+  const { data: categories } = useQuery({
+    queryKey: ["category-list"],
+    queryFn: fetchCategoriesAPI,
+  });
+
   // use query
   const { isError, isLoading, isSuccess, data, error, refetch } = useQuery({
     queryKey: ["list-posts"],
@@ -29,13 +36,15 @@ const ListPosts = () => {
 
   //Show messages to the user
   // is Loading
-  if (isLoading) return <AlertMessage type='loading' message='Loading please wait'/>;
+  if (isLoading)
+    return <AlertMessage type="loading" message="Loading please wait" />;
 
   // is Error
-  if (isError) return <AlertMessage type='error' message='Something happened'/>
+  if (isError)
+    return <AlertMessage type="error" message="Something happened" />;
 
   // no posts
-  if (data?.posts?.length <= 0) return <NoDataFound text="No post found"/>;
+  if (data?.posts?.length <= 0) return <NoDataFound text="No post found" />;
 
   return (
     <section className="overflow-hidden">
@@ -46,6 +55,9 @@ const ListPosts = () => {
         <h2 className="text-4xl font-bold mb-10">Latest Articles</h2>
 
         {/* Post Categories */}
+        <PostCategory
+          categories={categories?.categories}
+        />
         <div className="flex flex-wrap mb-32 -mx-4">
           {/* Posts */}
           {/* Posts */}
@@ -83,7 +95,7 @@ const ListPosts = () => {
                         <circle cx={2} cy={2} r={2} fill="#B8B8B8" />
                       </svg>
                       <div className="py-1 px-2 rounded-md border border-gray-100 text-xs font-medium text-gray-700 inline-block">
-                        {/* {post?.category?.categoryName} */}
+                        {post?.category?.categoryName}
                       </div>
                     </div>
                   </div>
