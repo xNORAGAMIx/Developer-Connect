@@ -5,6 +5,9 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { deletePostAPI, listPostsAPI } from "../../APIServices/posts/postsAPI";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+//Icons
+import { FaSearch } from "react-icons/fa";
+import { MdClear } from "react-icons/md";
 //API
 import { fetchCategoriesAPI } from "../../APIServices/categories/categoryAPI";
 //Components
@@ -38,6 +41,33 @@ const ListPosts = () => {
     refetch();
   };
 
+  // Search Handler
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  // Search Submit Handler
+  const searchSubmitHandler = (e) => {
+    e.preventDefault();
+    setFilters({ ...filters, description: search });
+    setPage(1);
+    refetch();
+  };
+
+  // Clear Filters Handler
+  const clearFiltersHandler = () => {
+    setFilters({});
+    setSearch("");
+    setPage(1);
+    refetch();
+  };
+
+  // Pagination Handler
+  const paginationHandler = (pageNumber) => {
+    setPage(pageNumber);
+    refetch();
+  };
+
   // Delete Post using useMutation
   const postMutation = useMutation({
     mutationKey: ["delete-post"],
@@ -54,18 +84,6 @@ const ListPosts = () => {
   //     .catch((e) => console.log(e));
   // };
 
-  //Show messages to the user
-  // is Loading
-  if (isLoading)
-    return <AlertMessage type="loading" message="Loading please wait" />;
-
-  // is Error
-  if (isError)
-    return <AlertMessage type="error" message="Something happened" />;
-
-  // no posts
-  if (data?.posts?.length <= 0) return <NoDataFound text="No post found" />;
-
   return (
     <section className="overflow-hidden">
       <div className="container px-4 mx-auto">
@@ -73,12 +91,48 @@ const ListPosts = () => {
 
         {/*  featured posts */}
         <h2 className="text-4xl font-bold mb-10">Latest Articles</h2>
-
+        {/* Seraching feature */}
+        <form
+          onSubmit={searchSubmitHandler}
+          className="flex flex-col md:flex-row items-center gap-2 mb-4"
+        >
+          <div className="flex-grow flex items-center border border-gray-300 rounded-lg overflow-hidden">
+            <input
+              type="text"
+              placeholder="Search"
+              value={search}
+              onChange={handleSearch}
+              className="flex-grow p-2 text-sm focus:outline-none"
+            />
+            <button
+              type="submit"
+              className="p-2 text-white bg-orange-500 hover:bg-blue rounded-r-lg"
+            >
+              <FaSearch className="h-5 w-5" />
+            </button>
+          </div>
+          <button
+            onClick={clearFiltersHandler}
+            className="p-2 text-sm text-orange-500 border border-blue-500 rounded-lg hover:bg-blue-100 flex items-center gap-1"
+          >
+            <MdClear className="h-4 w-4" />
+            Clear Filters
+          </button>
+        </form>
         {/* Post Categories */}
         <PostCategory
           categories={categories?.categories}
           onCategorySelect={categoryFilterHandler}
+          onClearFilters={clearFiltersHandler}
         />
+        {/* No Data Found */}
+        {data?.posts?.length <= 0 && <NoDataFound text="No post found" />}
+        {/* Error */}
+        {isError && <AlertMessage type="error" message="Something happened" />}
+        {/* Loading */}
+        {isLoading && (
+          <AlertMessage type="loading" message="Loading please wait" />
+        )}
         <div className="flex flex-wrap mb-32 -mx-4">
           {/* Posts */}
           {/* Posts */}
@@ -125,6 +179,18 @@ const ListPosts = () => {
             </div>
           ))}
         </div>
+      </div>
+      {/* Pagination */}
+      <div>
+        {page > 1 && (
+          <button onClick={() => paginationHandler(page - 1)}>Previous</button>
+        )}
+        <span>
+          Page {page} of {data?.totalPages}
+        </span>
+        {page < data?.totalPages && (
+          <button onClick={() => paginationHandler(page + 1)}>Next</button>
+        )}
       </div>
     </section>
   );

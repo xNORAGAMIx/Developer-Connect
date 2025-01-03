@@ -118,3 +118,12 @@ export const logoutUser = asyncHandler(async (req, res) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Logged out" });
 });
+
+export const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user)
+    .populate("posts")
+    .select(
+      "-password -passwordResetToken -accountVerificationToken -accountVerificationExpires -passwordResetExpires"
+    );
+  res.json({ user });
+});

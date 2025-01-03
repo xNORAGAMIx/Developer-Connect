@@ -68,7 +68,7 @@ function classNames(...classes) {
 }
 
 export default function UserDashbaord() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   //Get the auth user from redux store
 
   return (
@@ -93,7 +93,7 @@ export default function UserDashbaord() {
             </TransitionChild>
 
             <div className="fixed inset-0 flex">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="transition ease-in-out duration-300 transform"
                 enterFrom="-translate-x-full"
@@ -103,7 +103,7 @@ export default function UserDashbaord() {
                 leaveTo="-translate-x-full"
               >
                 <DialogPanel className="relative mr-16 flex w-full max-w-xs flex-1">
-                  <Transition.Child
+                  <TransitionChild
                     as={Fragment}
                     enter="ease-in-out duration-300"
                     enterFrom="opacity-0"
@@ -125,7 +125,7 @@ export default function UserDashbaord() {
                         />
                       </button>
                     </div>
-                  </Transition.Child>
+                  </TransitionChild>
 
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                     <div className="flex h-16 shrink-0 items-center">
@@ -168,7 +168,7 @@ export default function UserDashbaord() {
                     </nav>
                   </div>
                 </DialogPanel>
-              </Transition.Child>
+              </TransitionChild>
             </div>
           </Dialog>
         </Transition>
