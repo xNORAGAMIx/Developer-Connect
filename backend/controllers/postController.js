@@ -8,7 +8,7 @@ export const createPosts = asyncHandler(async (req, res) => {
   const { description, category } = req.body;
   //find the category
   const categoryFound = await Category.findById(category);
-  if(!categoryFound){
+  if (!categoryFound) {
     throw new Error("Category not found");
   }
   const postCreated = await Post.create({
@@ -17,7 +17,7 @@ export const createPosts = asyncHandler(async (req, res) => {
     author: req.user,
     category,
   });
-  
+
   // push the post to category
   categoryFound.posts.push(postCreated?._id);
   //resave the category
@@ -31,11 +31,31 @@ export const createPosts = asyncHandler(async (req, res) => {
 
 //Get all posts
 export const getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find().populate('category');
+  const { category, description, page = 1, limit = 10 } = req.query;
+  //basic filter
+  let filter = {};
+  if (category) {
+    filter.category = category;
+  }
+  if (description) {
+    filter.description = { $regex: description, $options: "i" }; //case insensitive
+  }
+  //paginate
+  const posts = await Post.find(filter)
+    .populate("category")
+    .sort({ createdAt: -1 })
+    .limit(limit * 1)
+    .skip((page - 1) * limit);
+
+  //total count of posts based on filtering
+  const totalPosts = await Post.countDocuments(filter);
   res.json({
     status: "success",
     message: "Posts fetched successfully",
     posts,
+    currentPage: page,
+    perPage: limit,
+    totalPages: Math.ceil(totalPosts / limit),
   });
 });
 

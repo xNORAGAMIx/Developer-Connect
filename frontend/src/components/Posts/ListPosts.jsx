@@ -1,24 +1,44 @@
 /* eslint-disable no-unused-vars */
+
+// Packages
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { deletePostAPI, listPostsAPI } from "../../APIServices/posts/postsAPI";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+//API
+import { fetchCategoriesAPI } from "../../APIServices/categories/categoryAPI";
+//Components
 import NoDataFound from "../Alert/NoDataFound";
 import AlertMessage from "../Alert/AlertMessage";
 import PostCategory from "../Category/PostCategory";
-import { fetchCategoriesAPI } from "../../APIServices/categories/categoryAPI";
 
 const ListPosts = () => {
+  //Filtering states and pagination
+  const [filters, setFilters] = useState({});
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  // Fetch Catgeories using useQuery
   const { data: categories } = useQuery({
     queryKey: ["category-list"],
     queryFn: fetchCategoriesAPI,
   });
 
-  // use query
+  // Fetch Posts using useQuery
   const { isError, isLoading, isSuccess, data, error, refetch } = useQuery({
-    queryKey: ["list-posts"],
-    queryFn: listPostsAPI,
+    queryKey: ["list-posts", { ...filters, page }],
+    queryFn: () =>
+      listPostsAPI({ ...filters, description: search, page, limit: 10 }),
   });
 
+  // Category Filter handler
+  const categoryFilterHandler = (category) => {
+    setFilters({ ...filters, category: category });
+    setPage(1);
+    refetch();
+  };
+
+  // Delete Post using useMutation
   const postMutation = useMutation({
     mutationKey: ["delete-post"],
     mutationFn: deletePostAPI,
@@ -57,6 +77,7 @@ const ListPosts = () => {
         {/* Post Categories */}
         <PostCategory
           categories={categories?.categories}
+          onCategorySelect={categoryFilterHandler}
         />
         <div className="flex flex-wrap mb-32 -mx-4">
           {/* Posts */}

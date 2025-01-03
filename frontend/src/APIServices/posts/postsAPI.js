@@ -13,8 +13,11 @@ export const createPostAPI = async (postData) => {
 };
 
 //List post api
-export const listPostsAPI = async () => {
-  const response = await axios.get(BASE_URL);
+export const listPostsAPI = async (filters) => {
+  console.log(filters);
+  const response = await axios.get(BASE_URL, {
+    params: filters,
+  });
   return response.data;
 };
 
