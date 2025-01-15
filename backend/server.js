@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import postRoutes from "./routes/postRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import planRoutes from "./routes/planRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -23,7 +24,7 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
-app.use(cookieParser())
+app.use(cookieParser());
 
 //Post routes
 app.use("/api/v1/posts", postRoutes);
@@ -33,6 +34,9 @@ app.use("/api/v1/users", userRoutes);
 
 //Category routes
 app.use("/api/v1/categories", categoryRoutes);
+
+//Plan routes
+app.use("/api/v1/plans", planRoutes);
 
 //Not found route
 app.use((req, res) => {
