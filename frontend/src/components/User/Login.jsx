@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
@@ -7,11 +8,16 @@ import AlertMessage from "../Alert/AlertMessage";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [type, setType] = useState("password");
 
   const userMutation = useMutation({
     mutationKey: ["login-user"],
     mutationFn: loginUser,
   });
+
+  const handleShowPassword = () => {
+    setType(type === "password" ? "text" : "password");
+  }
 
   const formik = useFormik({
     //initialization
@@ -87,13 +93,14 @@ const Login = () => {
             <label className="block text-sm font-medium mb-2">Password</label>
             <div className="flex items-center gap-1 w-full rounded-full p-4 border border-gray-100 shadow mb-3">
               <input
-                type="password"
+                type={type}
                 id="password"
                 {...formik.getFieldProps("password")}
                 className="outline-none flex-1 placeholder-gray-500 "
                 placeholder="Enter password"
               />
               <svg
+                onClick={handleShowPassword}
                 xmlns="http://www.w3.org/2000/svg"
                 width={24}
                 height={24}
