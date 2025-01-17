@@ -19,6 +19,8 @@ import AuthRoute from "./components/AuthRoute/AuthRoute";
 import UserDashbaord from "./components/User/UserDashboard";
 import AccountSummaryDashboard from "./components/User/AccountSummaryDashboard";
 import AddCategory from "./components/Category/AddCategory";
+import CreatePlan from "./components/Plans/CreatePlan";
+import Pricing from "./components/Plans/Pricing";
 
 const App = () => {
   const { userAuth } = useSelector((state) => state.auth);
@@ -64,6 +66,7 @@ const App = () => {
               </AuthRoute>
             }
           />
+          {/*Create category */}
           <Route
             path="add-category"
             element={
@@ -72,9 +75,19 @@ const App = () => {
               </AuthRoute>
             }
           />
+          {/*Create Plan*/}
+          <Route
+            path="add-plan"
+            element={
+              <AuthRoute>
+                <CreatePlan />
+              </AuthRoute>
+            }
+          />
         </Route>
         {/* Create Post */}
         {/* List Posts */}
+        <Route path="/pricing" element={<Pricing />} />
         <Route path="/posts" element={<ListPosts />} />
         {/* Single Post */}
         {/* Single Post */}

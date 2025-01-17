@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import Plan from "../models/Plan/Plan.js";
 
 export const createPlan = asyncHandler(async (req, res) => {
-  const { planName, features, price } = req.body;
+  const { planName, features, price, limitations } = req.body;
   //check if plan already exists
   const planExists = await Plan.findOne({ planName });
   if (planExists) {
@@ -20,6 +20,7 @@ export const createPlan = asyncHandler(async (req, res) => {
     planName,
     features,
     price,
+    limitations,
     user: req.user,
   });
   res.json({
